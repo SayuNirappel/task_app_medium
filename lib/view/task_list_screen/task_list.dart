@@ -13,6 +13,18 @@ class TaskList extends StatefulWidget {
 
 class _TaskListState extends State<TaskList> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        await TaskScreenController.getTaskList();
+        setState(() {});
+      },
+    );
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -45,9 +57,10 @@ class _TaskListState extends State<TaskList> {
             ///      Generate new Task
             ///
             InkWell(
-              onTap: () {
-                Navigator.push(context,
+              onTap: () async {
+                await Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AddTaskScreen()));
+                setState(() {});
               },
               child: Container(
                 width: double.infinity,
@@ -134,13 +147,40 @@ class _TaskListState extends State<TaskList> {
               child: Container(
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: 30,
+                    itemCount: TaskScreenController.taskList.length,
                     itemBuilder: (context, index) {
+                      String eval =
+                          TaskScreenController.taskList[index]["priority"];
                       return Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             gradient: LinearGradient(
-                                colors: [Colors.redAccent.shade100, Colors.red],
+                                colors: (eval == "Level 0")
+                                    ? [
+                                        Colors.lightGreenAccent.shade100,
+                                        Colors.green
+                                      ]
+                                    : (eval == "Level 1")
+                                        ? [
+                                            Colors.lightBlueAccent.shade100,
+                                            Colors.blueAccent
+                                          ]
+                                        : (eval == "Level 3")
+                                            ? [
+                                                Colors
+                                                    .deepOrangeAccent.shade100,
+                                                Colors.deepOrange
+                                              ]
+                                            : (eval == "Level 4")
+                                                ? [
+                                                    Colors.redAccent.shade100,
+                                                    Colors.red
+                                                  ]
+                                                : [
+                                                    Colors
+                                                        .yellowAccent.shade100,
+                                                    Colors.amber
+                                                  ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight)
 
@@ -158,13 +198,17 @@ class _TaskListState extends State<TaskList> {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   Text(
-                                    "Title",
+                                    TaskScreenController.taskList[index]
+                                        ["title"],
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
                                   Text(
-                                    "Date",
+                                    TaskScreenController.taskList[index]
+                                        ["date"],
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),

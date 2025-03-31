@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +8,8 @@ import 'package:sqflite_common_ffi_web/setup.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 class TaskScreenController {
+  static late Database database;
+  static List<Map> taskList = [];
   static String? selectedCategory;
   static String? selectedPriority;
   static const List<String> categories = [
@@ -57,4 +61,57 @@ class TaskScreenController {
     }
     return "";
   }
+
+  //sqflite codes
+
+  static Future<void> initDb() async {
+    if (kIsWeb) {
+      // Change default factory on the web
+      databaseFactory = databaseFactoryFfiWeb;
+    }
+
+    //open DB
+    database = await openDatabase("task.db", version: 1,
+        onCreate: (Database db, int version) async {
+      // When creating the db, create the table
+      await db.execute(
+          'CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, details TEXT, category TEXT, priority TEXT,date TEXT)');
+    });
+  }
+
+  ///
+  ///
+  ///// get data from DB
+  ///
+  ///
+
+  static Future<void> getTaskList() async {
+    taskList = await database.rawQuery('SELECT * FROM Tasks');
+    log(taskList.toString());
+  }
+
+  ///
+  ///
+  // add data to DB
+  ///
+  ///
+  static Future<void> addTask({
+    required String title,
+    required String details,
+    required String date,
+  }) async {
+    await database.rawInsert(
+        'INSERT INTO Tasks(title, details, category, priority, date) VALUES(?, ?, ?,?, ?)',
+        [title, details, selectedCategory, selectedPriority, date]);
+    await getTaskList();
+    //
+    //askabout await while calling addnote and on calling getallNotes
+    //
+  }
+
+  ///
+  ///
+  ///
+  ///
+  ///
 }

@@ -215,17 +215,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 InkWell(
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
-                      // await TaskScreenController.insertNote(
-                      //   titleController.text.trim(),
-                      //   detailsController.text.trim(),
-                      //   TaskScreenController.selectedCategory ?? "All",
-                      //   TaskScreenController.selectedPriority ?? "Level 0",
-                      //   DateTime.now(),
-                      // );
-
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   SnackBar(content: Text("Note Added Successfully")),
-                      // );
+                      TaskScreenController.addTask(
+                          title: titleController.text,
+                          details: detailsController.text,
+                          date: dateController.text);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Task Listed Successfully")),
+                      );
 
                       Navigator.pop(context);
                     }
