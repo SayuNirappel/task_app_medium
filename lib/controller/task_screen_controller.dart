@@ -10,6 +10,8 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 class TaskScreenController {
   static late Database database;
   static List<Map> taskList = [];
+  static List<Map> searchList = [];
+  static String sCondition = "title";
   static String? displayCategory;
   static String? selectedCategory;
   static String? selectedPriority;
@@ -83,7 +85,13 @@ class TaskScreenController {
     return "";
   }
 
+  ///
+  ///
+  ///
   //sqflite codes
+  ///
+  ///
+  ///
 
   static Future<void> initDb() async {
     if (kIsWeb) {
@@ -108,6 +116,7 @@ class TaskScreenController {
 
   static Future<void> getTaskList() async {
     taskList = await database.rawQuery('SELECT * FROM Tasks');
+    //await getTaskList();
     log(taskList.toString());
   }
 
@@ -132,6 +141,23 @@ class TaskScreenController {
 
   ///
   ///
+  ///--------Update data on DB
+  ///
+  ///
+  static Future<void> editTask(
+      {required String title,
+      required String details,
+      required String date,
+      required int taskId}) async {
+    await database.rawUpdate(
+      'UPDATE Tasks SET title = ?, details = ?, priority=?, category = ?, date = ? WHERE id = ?',
+      [title, details, selectedPriority, selectedCategory, date, taskId],
+    );
+    await getTaskList();
+  }
+
+  ///
+  ///
   ///---Deleete Data from DB
   ///
   ///
@@ -143,7 +169,15 @@ class TaskScreenController {
 
   ///
   ///
+  ///-------search data on DB
   ///
   ///
-  ///
+
+  static Future<void> searchTask(String ipdata) async {
+    searchList = await database.rawQuery(
+      'SELECT * FROM Tasks WHERE $sCondition LIKE ?',
+      ['%$ipdata%'],
+    );
+    log(searchList.toString());
+  }
 }

@@ -4,7 +4,23 @@ import 'package:task_app_medium/controller/task_screen_controller.dart';
 void main() {}
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  const AddTaskScreen(
+      {super.key,
+      this.isEdit = false,
+      this.taskTitle,
+      this.details,
+      this.priority,
+      this.category,
+      this.date,
+      this.taskId});
+
+  final bool isEdit;
+  final String? taskTitle;
+  final String? details;
+  final String? category;
+  final String? priority;
+  final String? date;
+  final int? taskId;
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -17,6 +33,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    if (widget.isEdit) {
+      titleController.text = widget.taskTitle ?? "";
+      detailsController.text = widget.details ?? "";
+      dateController.text = widget.date ?? "";
+      TaskScreenController.onPrioritySelection(widget.priority);
+      TaskScreenController.onCategorySelection(widget.category);
+      setState(() {});
+    } else {
+      TaskScreenController.onPrioritySelection(null);
+      TaskScreenController.onCategorySelection(null);
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade600,
@@ -26,7 +58,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: Icon(Icons.arrow_back, color: Colors.white)),
         backgroundColor: Colors.blueGrey,
         title: Text(
-          "Add New",
+          widget.isEdit == true ? "Update" : "Add New",
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -214,16 +246,31 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 InkWell(
                   onTap: () async {
-                    if (_formKey.currentState!.validate()) {
-                      TaskScreenController.addTask(
-                          title: titleController.text,
-                          details: detailsController.text,
-                          date: dateController.text);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Task Listed Successfully")),
-                      );
+                    if (widget.isEdit) {
+                      if (_formKey.currentState!.validate()) {
+                        TaskScreenController.editTask(
+                            taskId: int.parse(widget.taskId!.toString()),
+                            title: titleController.text,
+                            details: detailsController.text,
+                            date: dateController.text);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Task Listed Successfully")),
+                        );
 
-                      Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                    } else {
+                      if (_formKey.currentState!.validate()) {
+                        TaskScreenController.addTask(
+                            title: titleController.text,
+                            details: detailsController.text,
+                            date: dateController.text);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Task Listed Successfully")),
+                        );
+
+                        Navigator.pop(context);
+                      }
                     }
                   },
                   child: Container(

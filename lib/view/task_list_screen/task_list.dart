@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_app_medium/controller/task_screen_controller.dart';
 import 'package:task_app_medium/view/add_task_screen/add_task_screen.dart';
+import 'package:task_app_medium/view/manage_task_screen/manage_task_screen.dart';
 import 'package:task_app_medium/view/task_details_screen/task_details_screen.dart';
 
 void main() {}
@@ -111,40 +112,41 @@ class _TaskListState extends State<TaskList> {
             ),
 
             ///
-            /// category selection
+            /// Manage Tasks
             ///
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    //color: Colors.white
-                  ),
-                  color: Colors.grey.shade400),
-              margin: EdgeInsets.all(10),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: DropdownButton(
-                    dropdownColor: Colors.grey.shade300,
-                    //focusColor: Colors.greenAccent,
-                    isExpanded: true,
-                    value: TaskScreenController.displayCategory,
-                    menuWidth: MediaQuery.sizeOf(context).width * .85,
-                    hint: Text(
-                      "All",
-                      style: TextStyle(fontWeight: FontWeight.bold
-                          //color: Colors.white
-                          ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageTaskScreen()));
+              },
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      //color: Colors.white
                     ),
-                    items: List.generate(
-                        TaskScreenController.categories.length,
-                        (index) => DropdownMenuItem(
-                            value: TaskScreenController.categories[index],
-                            child:
-                                Text(TaskScreenController.categories[index]))),
-                    onChanged: (value) {
-                      TaskScreenController.onDisCategorySelection(value);
-                      setState(() {});
-                    }),
+                    color: Colors.blueGrey),
+                margin: EdgeInsets.all(10),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Manage Task List",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17)),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white,
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
 
@@ -211,32 +213,56 @@ class _TaskListState extends State<TaskList> {
                                       MainAxisAlignment.spaceAround,
                                   spacing: 10,
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          gradient: LinearGradient(
-                                              colors: [
-                                                Colors.white,
-                                                Colors.grey.shade400
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                spreadRadius: 1,
-                                                blurRadius: 3,
-                                                offset: Offset(1, 1))
-                                          ]),
-                                      width: 45,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.edit),
-                                          Text("Edit")
-                                        ],
+                                    //-------Edit----------
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => AddTaskScreen(
+                                                  isEdit: true,
+                                                  taskId: TaskScreenController
+                                                      .taskList[index]["id"],
+                                                  taskTitle: TaskScreenController
+                                                      .taskList[index]["title"],
+                                                  date: TaskScreenController
+                                                      .taskList[index]["date"],
+                                                  details: TaskScreenController.taskList[index]
+                                                      ["details"],
+                                                  priority: TaskScreenController
+                                                          .taskList[index]
+                                                      ["priority"],
+                                                  category: TaskScreenController
+                                                      .taskList[index]["category"]),
+                                            ));
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            gradient: LinearGradient(
+                                                colors: [
+                                                  Colors.white,
+                                                  Colors.grey.shade400
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black,
+                                                  spreadRadius: 1,
+                                                  blurRadius: 3,
+                                                  offset: Offset(1, 1))
+                                            ]),
+                                        width: 45,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.edit),
+                                            Text("Edit")
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     //-------Delete------------

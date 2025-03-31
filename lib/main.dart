@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_app_medium/controller/task_screen_controller.dart';
+import 'package:task_app_medium/view/manage_task_screen/manage_task_screen.dart';
 import 'package:task_app_medium/view/task_list_screen/task_list.dart';
 
 Future<void> main() async {
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // home: ManageTaskScreen(),
       home: TaskList(),
     );
   }
