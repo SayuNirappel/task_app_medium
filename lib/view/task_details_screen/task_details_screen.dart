@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:task_app_medium/controller/task_screen_controller.dart';
 
 void main() {}
 
 class TaskDetailsScreen extends StatelessWidget {
-  const TaskDetailsScreen({super.key});
+  final int index;
+  const TaskDetailsScreen({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
+    String eval = TaskScreenController.taskList[index]["priority"];
     return Scaffold(
       backgroundColor: Colors.grey.shade600,
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
-        leading: Icon(
-          Icons.arrow_back,
-          color: Colors.white,
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
         ),
         title: Text(
           "Task in Detail",
@@ -23,39 +29,47 @@ class TaskDetailsScreen extends StatelessWidget {
       body: Container(
         margin: EdgeInsets.all(20),
         child: Column(
-          spacing: 10,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "title",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25),
-            ),
-            Row(
-              spacing: 15,
+            Column(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.circle,
-                  size: 10,
-                  color: Colors.lightGreenAccent,
-                ),
                 Text(
-                  "category",
+                  TaskScreenController.taskList[index]["title"],
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                      fontSize: 25),
                 ),
+                Row(
+                  spacing: 15,
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: TaskScreenController.priorColorSelection(eval)[1],
+                    ),
+                    Text(
+                      TaskScreenController.taskList[index]["category"],
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+                  ],
+                ),
+                Container(
+                    child: Text(
+                  TaskScreenController.taskList[index]["details"],
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 10,
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                )),
               ],
             ),
             Container(
-                child: Text(
-              "Discription",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            )),
-            Container(
+              color: TaskScreenController.priorColorSelection(eval)[1],
               width: double.infinity,
               child: Text(
                 "Counter",
