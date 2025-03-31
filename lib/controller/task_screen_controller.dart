@@ -10,6 +10,7 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 class TaskScreenController {
   static late Database database;
   static List<Map> taskList = [];
+  static String? displayCategory;
   static String? selectedCategory;
   static String? selectedPriority;
   static const List<String> categories = [
@@ -34,8 +35,28 @@ class TaskScreenController {
     "Level 4"
   ];
 
+  static List<Color> priorColorSelection(String eval) {
+    switch (eval) {
+      case "Level 0":
+        return [Colors.lightGreenAccent.shade100, Colors.green];
+      case "Level 1":
+        return [Colors.lightBlueAccent.shade100, Colors.blueAccent];
+      case "Level 3":
+        return [Colors.deepOrangeAccent.shade100, Colors.deepOrange];
+
+      case "Level 4":
+        return [Colors.redAccent.shade100, Colors.red];
+      default:
+        return [Colors.yellowAccent.shade100, Colors.amber];
+    }
+  }
+
   static void onCategorySelection(String? value) {
     selectedCategory = value;
+  }
+
+  static void onDisCategorySelection(String? value) {
+    displayCategory = value;
   }
 
   static void onPrioritySelection(String? value) {
@@ -107,6 +128,17 @@ class TaskScreenController {
     //
     //askabout await while calling addnote and on calling getallNotes
     //
+  }
+
+  ///
+  ///
+  ///---Deleete Data from DB
+  ///
+  ///
+
+  static Future<void> removeTask(var did) async {
+    await database.rawDelete('DELETE FROM Tasks WHERE id = ?', [did]);
+    await getTaskList();
   }
 
   ///

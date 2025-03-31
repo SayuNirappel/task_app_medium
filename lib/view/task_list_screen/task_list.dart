@@ -69,7 +69,14 @@ class _TaskListState extends State<TaskList> {
                     gradient: LinearGradient(
                         colors: [Colors.grey.shade400, Colors.blueGrey],
                         begin: Alignment.topLeft,
-                        end: Alignment.bottomRight)),
+                        end: Alignment.bottomRight),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black,
+                          spreadRadius: 1,
+                          blurRadius: 6,
+                          offset: Offset(3, 3))
+                    ]),
                 margin: EdgeInsets.all(10),
                 height: 100,
                 child: Column(
@@ -119,7 +126,7 @@ class _TaskListState extends State<TaskList> {
                     dropdownColor: Colors.grey.shade300,
                     //focusColor: Colors.greenAccent,
                     isExpanded: true,
-                    value: TaskScreenController.selectedCategory,
+                    value: TaskScreenController.displayCategory,
                     menuWidth: MediaQuery.sizeOf(context).width * .85,
                     hint: Text(
                       "All",
@@ -134,7 +141,7 @@ class _TaskListState extends State<TaskList> {
                             child:
                                 Text(TaskScreenController.categories[index]))),
                     onChanged: (value) {
-                      TaskScreenController.onCategorySelection(value);
+                      TaskScreenController.onDisCategorySelection(value);
                       setState(() {});
                     }),
               ),
@@ -153,39 +160,13 @@ class _TaskListState extends State<TaskList> {
                           TaskScreenController.taskList[index]["priority"];
                       return Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: LinearGradient(
-                                colors: (eval == "Level 0")
-                                    ? [
-                                        Colors.lightGreenAccent.shade100,
-                                        Colors.green
-                                      ]
-                                    : (eval == "Level 1")
-                                        ? [
-                                            Colors.lightBlueAccent.shade100,
-                                            Colors.blueAccent
-                                          ]
-                                        : (eval == "Level 3")
-                                            ? [
-                                                Colors
-                                                    .deepOrangeAccent.shade100,
-                                                Colors.deepOrange
-                                              ]
-                                            : (eval == "Level 4")
-                                                ? [
-                                                    Colors.redAccent.shade100,
-                                                    Colors.red
-                                                  ]
-                                                : [
-                                                    Colors
-                                                        .yellowAccent.shade100,
-                                                    Colors.amber
-                                                  ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight)
-
-                            //color: Colors.redAccent.shade100,
-                            ),
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: LinearGradient(
+                              colors: TaskScreenController.priorColorSelection(
+                                  eval), //selecting color based on priority
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight),
+                        ),
                         margin: EdgeInsets.all(10),
                         height: 100,
                         child: Padding(
@@ -222,9 +203,21 @@ class _TaskListState extends State<TaskList> {
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                    ),
+                                        borderRadius: BorderRadius.circular(10),
+                                        gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white,
+                                              Colors.grey.shade400
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black,
+                                              spreadRadius: 1,
+                                              blurRadius: 3,
+                                              offset: Offset(1, 1))
+                                        ]),
                                     width: 45,
                                     child: Column(
                                       mainAxisAlignment:
@@ -235,19 +228,42 @@ class _TaskListState extends State<TaskList> {
                                       ],
                                     ),
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                    ),
-                                    width: 45,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.delete),
-                                        Text("Delete")
-                                      ],
+                                  //-------Delete------------
+                                  InkWell(
+                                    onTap: () async {
+                                      var did = TaskScreenController
+                                          .taskList[index]["id"];
+                                      await TaskScreenController.removeTask(
+                                          did);
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white,
+                                                Colors.grey.shade400
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                spreadRadius: 1,
+                                                blurRadius: 3,
+                                                offset: Offset(1, 1))
+                                          ]),
+                                      width: 45,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.delete),
+                                          Text("Delete")
+                                        ],
+                                      ),
                                     ),
                                   )
                                 ],
