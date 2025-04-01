@@ -217,6 +217,71 @@ class _ManageTaskScreenState extends State<ManageTaskScreen> {
                       ),
                     ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        "Display All Tasks : ",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          await TaskScreenController.resetList();
+                          setState(() {});
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text("Reset",
+                                style: TextStyle(
+                                    color: Colors.orangeAccent,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Sort By : ",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          Text(
+                            TaskScreenController.sCondition,
+                            style: TextStyle(
+                                color: Colors.orangeAccent,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          await TaskScreenController.sortList();
+                          setState(() {});
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text("Sort",
+                                style: TextStyle(
+                                    color: Colors.orangeAccent,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
             ),

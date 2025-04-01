@@ -180,4 +180,28 @@ class TaskScreenController {
     );
     log(searchList.toString());
   }
+
+  ///
+  ///
+  ///-------Reset data on DB
+  ///
+  ///
+
+  static Future<void> resetList() async {
+    searchList = await database.rawQuery('SELECT * FROM Tasks');
+    //await getTaskList();
+    log(taskList.toString());
+  }
+
+  ///
+  ///
+  ///---------Sort----------
+  ///
+  ///
+
+  static Future<void> sortList() async {
+    searchList = await database.rawQuery(
+      'SELECT * FROM Tasks ORDER BY $sCondition ASC',
+    );
+  }
 }
