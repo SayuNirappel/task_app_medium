@@ -8,6 +8,7 @@ import 'package:sqflite_common_ffi_web/setup.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 class TaskScreenController {
+  bool colorState = true;
   static late Database database;
   static List<Map> taskList = [];
   static List<Map> searchList = [];

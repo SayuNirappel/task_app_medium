@@ -72,7 +72,7 @@ class TaskDetailsScreen extends StatelessWidget {
               color: TaskScreenController.priorColorSelection(eval)[1],
               width: double.infinity,
               child: Text(
-                "Counter",
+                TaskScreenController.taskList[index]["date"],
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
