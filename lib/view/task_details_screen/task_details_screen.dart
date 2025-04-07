@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:task_app_medium/controller/task_screen_controller.dart';
 
-class TaskDetailsScreen extends StatelessWidget {
+class TaskDetailsScreen extends StatefulWidget {
   final int index;
   const TaskDetailsScreen({super.key, required this.index});
 
   @override
+  State<TaskDetailsScreen> createState() => _TaskDetailsScreenState();
+}
+
+class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
+  @override
   Widget build(BuildContext context) {
-    String eval = TaskScreenController.taskList[index]["priority"];
+    String eval = TaskScreenController.taskList[widget.index]["priority"];
+    int pState = TaskScreenController.taskList[widget.index]["status"];
     return Scaffold(
       backgroundColor: Colors.grey.shade600,
       appBar: AppBar(
@@ -34,7 +40,7 @@ class TaskDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  TaskScreenController.taskList[index]["title"],
+                  TaskScreenController.taskList[widget.index]["title"],
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -49,7 +55,7 @@ class TaskDetailsScreen extends StatelessWidget {
                       color: TaskScreenController.priorColorSelection(eval)[1],
                     ),
                     Text(
-                      TaskScreenController.taskList[index]["category"],
+                      TaskScreenController.taskList[widget.index]["category"],
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -57,9 +63,46 @@ class TaskDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    Text(
+                      "Status : ",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        int newStatus = pState == 0 ? 1 : 0;
+                        int taskId =
+                            TaskScreenController.taskList[widget.index]["id"];
+                        await TaskScreenController.updateTaskStatus(
+                            taskId, newStatus);
+                        // Refresh the task list
+                        await TaskScreenController.getTaskList();
+                        // Update the state
+                        setState(() {
+                          pState = newStatus;
+                        });
+                      },
+                      child: Container(
+                        child: Text(
+                          pState == 0 ? "In Progress" : "Completed",
+                          style: TextStyle(
+                              color: pState == 0
+                                  ? Colors.redAccent
+                                  : Colors.lightGreenAccent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
                 Container(
                     child: Text(
-                  TaskScreenController.taskList[index]["details"],
+                  TaskScreenController.taskList[widget.index]["details"],
                   overflow: TextOverflow.ellipsis,
                   maxLines: 10,
                   style: TextStyle(color: Colors.white, fontSize: 18),
@@ -70,7 +113,7 @@ class TaskDetailsScreen extends StatelessWidget {
               color: TaskScreenController.priorColorSelection(eval)[1],
               width: double.infinity,
               child: Text(
-                TaskScreenController.taskList[index]["date"],
+                TaskScreenController.taskList[widget.index]["date"],
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,

@@ -12,6 +12,7 @@ class TaskScreenController {
   static late Database database;
   static List<Map> taskList = [];
   static List<Map> searchList = [];
+  static List<Map> statusList = [];
   static String sCondition = "title";
   static String? displayCategory;
   static String? selectedCategory;
@@ -101,12 +102,25 @@ class TaskScreenController {
     }
 
     //open DB
-    database = await openDatabase("task.db", version: 1,
-        onCreate: (Database db, int version) async {
-      // When creating the db, create the table
-      await db.execute(
-          'CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, details TEXT, category TEXT, priority TEXT,date TEXT)');
-    });
+    database = await openDatabase(
+      "task.db",
+      version: 2,
+      onCreate: (Database db, int version) async {
+        // When creating the db, create the table
+        await db.execute(
+            'CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, details TEXT, category TEXT, priority TEXT,date TEXT)');
+        await db.execute(
+            'CREATE TABLE TState (id INTEGER PRIMARY KEY, status INTEGER NOT NULL)');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        await db.execute('DROP TABLE IF EXISTS Tasks');
+        await db.execute('DROP TABLE IF EXISTS TState');
+        await db.execute(
+            'CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, details TEXT, category TEXT, priority TEXT, date TEXT)');
+        await db.execute(
+            'CREATE TABLE TState (id INTEGER PRIMARY KEY, status INTEGER NOT NULL)');
+      },
+    );
   }
 
   ///
@@ -116,7 +130,8 @@ class TaskScreenController {
   ///
 
   static Future<void> getTaskList() async {
-    taskList = await database.rawQuery('SELECT * FROM Tasks');
+    taskList = await database
+        .rawQuery('SELECT * FROM Tasks JOIN TState ON Tasks.id = TState.id');
     //await getTaskList();
     log(taskList.toString());
   }
@@ -134,6 +149,9 @@ class TaskScreenController {
     await database.rawInsert(
         'INSERT INTO Tasks(title, details, category, priority, date) VALUES(?, ?, ?,?, ?)',
         [title, details, selectedCategory, selectedPriority, date]);
+    await database
+        .rawInsert('INSERT INTO TState(status) VALUES(?)', [0]); // false
+
     await getTaskList();
     //
     //askabout await while calling addnote and on calling getallNotes
@@ -159,12 +177,26 @@ class TaskScreenController {
 
   ///
   ///
+  ///-------update status on DB
+  ///
+  ///
+
+  static Future<void> updateTaskStatus(int id, int newStatus) async {
+    await database.rawUpdate(
+      'UPDATE TState SET status = ? WHERE id = ?',
+      [newStatus, id],
+    );
+  }
+
+  ///
+  ///
   ///---Deleete Data from DB
   ///
   ///
 
   static Future<void> removeTask(var did) async {
     await database.rawDelete('DELETE FROM Tasks WHERE id = ?', [did]);
+    await database.rawDelete('DELETE FROM TState WHERE id = ?', [did]);
     await getTaskList();
   }
 
