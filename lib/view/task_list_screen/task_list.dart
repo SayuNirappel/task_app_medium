@@ -4,8 +4,6 @@ import 'package:task_app_medium/view/add_task_screen/add_task_screen.dart';
 import 'package:task_app_medium/view/manage_task_screen/manage_task_screen.dart';
 import 'package:task_app_medium/view/task_details_screen/task_details_screen.dart';
 
-void main() {}
-
 class TaskList extends StatefulWidget {
   const TaskList({super.key});
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_app_medium/controller/task_screen_controller.dart';
 
-void main() {}
-
 class TaskDetailsScreen extends StatelessWidget {
   final int index;
   const TaskDetailsScreen({super.key, required this.index});
