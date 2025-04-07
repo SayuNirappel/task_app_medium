@@ -97,7 +97,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               fontSize: 18),
                         ),
                       ),
-                    )
+                    ),
+                    Text(
+                      " (Click to change Status)",
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
                   ],
                 ),
                 Container(
